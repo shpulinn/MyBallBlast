@@ -18,4 +18,9 @@ public abstract class DropFactoryBase<T> : IDropFactory<T> where T : IDroppable
     }
 
     protected abstract void ConfigureInstance(T instance);
+    
+    IDroppable IDropFactory.Create(Vector3 position)
+    {
+        return Create(position);
+    }
 }
