@@ -17,6 +17,7 @@ public class DropsFactoryRegistry : MonoBehaviour
     [SerializeField] private Cart cart;
 
     private Dictionary<System.Type, object> factories = new();
+    private List<IDropFactory> allBonusesFactories = new();
 
     private void Awake()
     {
@@ -33,9 +34,16 @@ public class DropsFactoryRegistry : MonoBehaviour
 
     private void InitializeFactories()
     {
-        RegisterFactory(new CoinFactory(coinPrefab));
-        RegisterFactory(new FreezeBonusFactory(freezeBonusPrefab, spawner, freezeScreenEffect));
-        RegisterFactory(new ShieldBonusFactory(shieldBonusPrefab, cart, shieldVisualEffect));
+        var coinFactory = new CoinFactory(coinPrefab);
+        var freezeFactory = new FreezeBonusFactory(freezeBonusPrefab, spawner, freezeScreenEffect);
+        var shieldFactory = new ShieldBonusFactory(shieldBonusPrefab, cart, shieldVisualEffect);
+
+        RegisterFactory(coinFactory);
+        RegisterFactory(freezeFactory);
+        RegisterFactory(shieldFactory);
+        
+        allBonusesFactories.Add(freezeFactory);
+        allBonusesFactories.Add(shieldFactory);
     }
 
     public void RegisterFactory<T>(IDropFactory<T> factory) where T : IDroppable
@@ -52,5 +60,17 @@ public class DropsFactoryRegistry : MonoBehaviour
 
         Debug.LogError($"Factory for type {typeof(T)} not found!");
         return default;
+    }
+    
+    public IDroppable CreateRandom(Vector3 position)
+    {
+        if (allBonusesFactories.Count == 0)
+        {
+            Debug.LogError("No drop factories available!");
+            return null;
+        }
+
+        int index = Random.Range(0, allBonusesFactories.Count);
+        return allBonusesFactories[index].Create(position);
     }
 }
