@@ -91,8 +91,7 @@ public class Stone : Destructible
         var chance = Random.Range(0f, 1f);
         if (chance < bonusSpawnChance)
         {
-            //DropsFactoryRegistry.Instance.Create<FreezeBonus>(transform.position);
-            DropsFactoryRegistry.Instance.Create<ShieldBonus>(transform.position);
+            DropsFactoryRegistry.Instance.CreateRandom(transform.position);
         }
         else if (chance < coinSpawnChance)
         {
