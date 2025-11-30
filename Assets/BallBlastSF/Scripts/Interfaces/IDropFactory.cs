@@ -1,6 +1,11 @@
 ﻿using UnityEngine;
 
-public interface IDropFactory<T> where T : IDroppable
+public interface IDropFactory
 {
-    T Create(Vector3 position);
+    IDroppable Create(Vector3 position);
+}
+
+public interface IDropFactory<out T> : IDropFactory where T : IDroppable
+{
+    new T Create(Vector3 position);
 }
