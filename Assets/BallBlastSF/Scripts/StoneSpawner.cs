@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
+using Random = UnityEngine.Random;
 
 public class StoneSpawner : MonoBehaviour
 {
@@ -25,6 +27,17 @@ public class StoneSpawner : MonoBehaviour
     private int stoneMinHealth;
     private float timer = 0f;
     private int spawnedAmount = 0;
+
+    private void OnEnable()
+    {
+        timer = 0f;
+        spawnedAmount = 0;
+        foreach (var stone in spawnedStones)
+        {
+            Destroy(stone.gameObject);
+        }
+        spawnedStones.Clear();
+    }
 
     private void Start()
     {
