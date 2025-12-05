@@ -5,9 +5,12 @@ using UnityEngine.Audio;
 [RequireComponent(typeof(AudioSource))]
 public class SoundManager : MonoBehaviour
 {
+    public static event Action<bool> OnMute;
+    
     [SerializeField] private SoundsSO SO;
     private static SoundManager instance = null;
     private AudioSource audioSource;
+    private bool _isMuted;
 
     private void Awake()
     {
@@ -20,6 +23,8 @@ public class SoundManager : MonoBehaviour
 
     public static void PlaySound(SoundType sound, AudioSource source = null, float volume = 1)
     {
+        if(instance._isMuted) return;
+        
         SoundList soundList = instance.SO.sounds[(int)sound];
         AudioClip[] clips = soundList.sounds;
         AudioClip randomClip = clips[UnityEngine.Random.Range(0, clips.Length)];
@@ -39,6 +44,13 @@ public class SoundManager : MonoBehaviour
             instance.audioSource.pitch = pitch;
             instance.audioSource.PlayOneShot(randomClip, volume * soundList.volume);
         }
+    }
+
+    // Called from UI
+    public static void Mute()
+    {
+        instance._isMuted = !instance._isMuted;
+        OnMute?.Invoke(instance._isMuted);
     }
 }
 
